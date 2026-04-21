@@ -7,19 +7,29 @@
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 //
-
 #include <iostream>
-#include <fstream>
 #include <boost/asio.hpp>
+#include "session.hpp"
 #include "server.hpp"
 
 using boost::asio::ip::tcp;
 
-int main() {
-    short port = 8080;
-    boost::asio::io_context io_context;
-    server s(io_context, port);
-    std::cout << "Server running on port " << port << "..." << std::endl;
-    io_context.run();
-    return 0;
+server::server(boost::asio::io_context &io_context, short port)
+    : acceptor_(io_context, tcp::endpoint(tcp::v4(), port))
+{
+  accept();
+}
+
+void server::accept()
+{
+  acceptor_.async_accept(
+      [this](boost::system::error_code ec, tcp::socket socket)
+      {
+        if (!ec)
+        {
+          std::make_shared<session>(std::move(socket))->start();
+        }
+
+        accept();
+      });
 }

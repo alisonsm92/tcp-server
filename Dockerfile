@@ -9,5 +9,3 @@ COPY . .
 RUN cmake -B build -S .
 
 RUN cmake --build build
-
-CMD ["./build/server"]
