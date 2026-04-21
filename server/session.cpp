@@ -14,10 +14,17 @@
 
 session::session(tcp::socket socket) 
     : socket_(std::move(socket)) {
-    output_file_.open("data/received_data.bin", std::ios::binary);
 }
 
 void session::start() {
+    auto remote_endpoint = socket_.remote_endpoint();
+    std::string filename = "data/session_" + 
+      remote_endpoint.address().to_string() + "_" + 
+      std::to_string(remote_endpoint.port()) + ".bin";
+    
+    output_file_.open(filename, std::ios::binary);
+    std::cout << "Starting session. Saving to: " << filename << std::endl;
+    
     read();
 }
 
@@ -25,7 +32,7 @@ void session::write_to_file(const char* data, std::size_t length) {
     if (output_file_.is_open()) {
         output_file_.write(data, length);
         output_file_.flush();
-        std::cout << "Saved " << length << " bytes to data/received_data.bin" << std::endl;
+        std::cout << "Saved " << length << " bytes." << std::endl;
     }
 }
 
