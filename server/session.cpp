@@ -25,6 +25,7 @@ void session::read() {
         [this, self](boost::system::error_code ec, std::size_t length) {
             if (!ec) {
                 std::cout << "Received: " << std::string(data_, length) << std::endl;
+                read();
             }
         });
 }
