@@ -5,11 +5,12 @@ using boost::asio::ip::tcp;
 class server
 {
 public:
-  server(boost::asio::io_context &io_context, short port, std::size_t max_file_size);
+  server(boost::asio::io_context &io_context, short port, std::size_t max_file_size, int timeout);
 
 private:
   void accept();
 
   tcp::acceptor acceptor;
   std::size_t max_file_size;
+  int timeout;
 };

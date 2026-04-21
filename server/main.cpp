@@ -26,9 +26,10 @@ int main() {
     std::size_t max_file_size = config.count("MAX_FILE_SIZE") 
       ? std::stoul(config["MAX_FILE_SIZE"]) 
       : 1024;
+    int timeout = config.count("TIMEOUT_IN_SECONDS") ? std::stoi(config["TIMEOUT_IN_SECONDS"]) : 10;
 
     boost::asio::io_context io_context;
-    server s(io_context, port, max_file_size);
+    server s(io_context, port, max_file_size, timeout);
     std::cout << "Server running on port " << port << "..." << std::endl;
     io_context.run();
 
