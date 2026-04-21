@@ -6,5 +6,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN rm -rf build && cmake -B build -S .
+RUN mkdir -p build data
+RUN cmake -B build -S .
 RUN cmake --build build
