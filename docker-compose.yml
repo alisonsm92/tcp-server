@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  server:
+    build: .
+    command: ./build/server
+    ports:
+      - "8080:8080"
+
+  client:
+    build: .
+    command: ./build/client
+    stdin_open: true
+    tty: true
+    depends_on:
+      - server
