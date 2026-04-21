@@ -1,51 +1,55 @@
-# TCP Server & Client (C++ Boost Asio)
+# TCP Server (C++ Boost Asio Challenge)
 
-Este projeto implementa um servidor TCP assíncrono e um cliente interativo utilizando a biblioteca Boost.Asio e C++11.
+Este projeto implementa um servidor TCP que recebe dados e os armazena em arquivos locais, respeitando um limite de tamanho configurável.
+
+## Funcionalidades e Premissas
+
+1. **Configuração via Arquivo:** O servidor carrega `PORT` e `MAX_FILE_SIZE` diretamente do arquivo `server.conf`.
+2. **Limite de Tamanho de Arquivo:** O servidor cria um arquivo para cada sessão com o padrão `session_<ip>_<porta>.bin`.
+3. **Comunicação TCP:** Utiliza sockets TCP assíncronos para o servidor e síncronos para o cliente.
+4. **Integridade de Dados:** Todos os bytes recebidos são persistidos. Se uma mensagem recebida exceder o espaço restante no arquivo atual, ela é dividida entre o arquivo atual e o próximo.
 
 ## Estrutura do Projeto
 
-- `server/`: Contém a implementação do servidor TCP.
-- `client/`: Contém o cliente TCP interativo que lê do terminal e envia para o servidor.
-- `Dockerfile`: Configuração para build da imagem.
-- `docker-compose.yml`: Orquestração dos serviços de servidor e cliente.
+- `server/`: Servidor com lógica de persistência e rotação de arquivos.
+- `client/`: Cliente interativo para envio de dados.
+- `server.conf`: Arquivo de configuração (Porta e Tamanho Máximo).
+- `data/`: Diretório onde os arquivos `.bin` serão salvos.
 
-## Pré-requisitos
+## Como Configurar
 
-- [Docker](https://docs.docker.com/get-docker/)
+Edite o arquivo `server.conf` na raiz do projeto:
 
-## Como Executar
-
-Para testar a interação entre o cliente e o servidor, siga os passos abaixo:
-
-### 1. Iniciar o Servidor
-Em um terminal, execute o comando para subir o servidor em segundo plano:
-```bash
-docker-compose up --build server
+```ini
+PORT=8080
+MAX_FILE_SIZE=100
 ```
 
-### 2. Executar o Cliente Interativo
-Abra um **segundo terminal** e execute o cliente:
-```bash
-docker-compose run client
-```
+## Como Executar os Testes
+
+1.**Iniciar o Ambiente:**
+
+  ```bash
+    docker-compose up --build server
+  ```
+
+2.**Executar o Cliente Interativo:**
+
+  ```bash
+    docker-compose run client
+  ```
 
 ### 3. Interagir
+
 - No terminal do **cliente**, digite qualquer mensagem e pressione `Enter`.
 - No terminal do **servidor**, você verá a mensagem recebida no formato: `Received: <sua mensagem>`.
 
-## Comandos Úteis
+### 4. **Verificar Arquivos:**
 
-- **Parar todos os serviços:**
-  ```bash
-  docker-compose down
-  ```
-- **Recompilar após mudanças no código:**
-  ```bash
-  docker-compose up --build server
-  ```
+  Confira a pasta `data/` local para ver os arquivos gerados.
 
-## Tecnologias Utilizadas
-- C++11
-- Boost.Asio (Networking)
-- CMake (Build System)
-- Docker (Containerização)
+## Tecnologias e Versões
+
+- **Linguagem:** C++17
+- **Biblioteca:** Boost.Asio 1.81+.
+- **Build:** CMake 3.10+ / GCC.
