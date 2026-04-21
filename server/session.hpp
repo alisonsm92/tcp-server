@@ -1,5 +1,6 @@
 #include <memory>
 #include <boost/asio.hpp>
+#include <fstream>
 
 using boost::asio::ip::tcp;
 
@@ -10,8 +11,10 @@ public:
 
 private:
     void read();
-    
-tcp::socket socket_;
-static constexpr std::size_t max_length = 1024;
-char data_[max_length];
+    void write_to_file(const char* data, std::size_t length);
+
+    tcp::socket socket_;
+    std::ofstream output_file_;
+    static constexpr std::size_t max_length = 1024;
+    char data_[max_length];
 };

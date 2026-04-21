@@ -9,14 +9,24 @@
 //
 #include <utility>
 #include <iostream>
+#include <fstream>
 #include "session.hpp"
 
 session::session(tcp::socket socket) 
     : socket_(std::move(socket)) {
+    output_file_.open("data/received_data.bin", std::ios::binary);
 }
 
 void session::start() {
     read();
+}
+
+void session::write_to_file(const char* data, std::size_t length) {
+    if (output_file_.is_open()) {
+        output_file_.write(data, length);
+        output_file_.flush();
+        std::cout << "Saved " << length << " bytes to data/received_data.bin" << std::endl;
+    }
 }
 
 void session::read() {
@@ -24,7 +34,7 @@ void session::read() {
     socket_.async_read_some(boost::asio::buffer(data_, max_length),
         [this, self](boost::system::error_code ec, std::size_t length) {
             if (!ec) {
-                std::cout << "Received: " << std::string(data_, length) << std::endl;
+                write_to_file(data_, length);
                 read();
             }
         });
