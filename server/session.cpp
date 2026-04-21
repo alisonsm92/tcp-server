@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <ctime>
 #include "session.hpp"
 
 session::session(tcp::socket socket, std::size_t max_file_size) 
@@ -11,9 +12,12 @@ session::session(tcp::socket socket, std::size_t max_file_size)
 
 void session::start() {
     auto remote_endpoint = socket.remote_endpoint();
+    std::time_t timestamp = std::time(nullptr);
+
     std::string filename = "data/session_" + 
-                            remote_endpoint.address().to_string() + "_" + 
-                            std::to_string(remote_endpoint.port()) + ".bin";
+      std::to_string(timestamp) + "_" +
+      remote_endpoint.address().to_string() + "_" + 
+      std::to_string(remote_endpoint.port()) + ".bin";
     
     output_file.open(filename, std::ios::binary | std::ios::app);
     std::cout << "Starting session. Saving to: " << filename << std::endl;

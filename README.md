@@ -5,7 +5,7 @@ Este projeto implementa um servidor TCP que recebe dados e os armazena em arquiv
 ## Funcionalidades e Premissas
 
 1. **Configuração via Arquivo:** O servidor carrega `PORT` e `MAX_FILE_SIZE` diretamente do arquivo `server.conf`.
-2. **Limite de Tamanho de Arquivo:** O servidor cria um arquivo para cada sessão com o padrão `session_<ip>_<porta>.bin`.
+2. **Limite de Tamanho de Arquivo:** O servidor cria um arquivo para cada sessão com o padrão `session_<timestamp>_<ip>_<porta>.bin`.
 3. **Comunicação TCP:** Utiliza sockets TCP assíncronos para o servidor e síncronos para o cliente.
 4. **Integridade de Dados:** Todos os bytes recebidos são persistidos. Se uma mensagem recebida exceder o espaço restante no arquivo atual, ela é dividida entre o arquivo atual e o próximo.
 
