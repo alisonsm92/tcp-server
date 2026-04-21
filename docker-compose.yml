@@ -6,11 +6,15 @@ services:
     command: ./build/server
     ports:
       - "8080:8080"
+    volumes:
+      - ./data:/app/data
+      - ./server.conf:/app/server.conf
 
   client:
     build: .
     command: ./build/client
     stdin_open: true
     tty: true
+    init: true
     depends_on:
       - server

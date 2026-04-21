@@ -1,25 +1,36 @@
-// Based on the Boost.Asio C++ library example: 
-// https://www.boost.org/doc/libs/1_81_0/doc/html/boost_asio/example/cpp11_examples.html#boost_asio.example.cpp11_examples.async_tcp_echo_server
-// ~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2025 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <map>
+#include <algorithm>
 #include <boost/asio.hpp>
 #include "server.hpp"
 
 using boost::asio::ip::tcp;
 
+std::map<std::string, std::string> load_config(const std::string& filename) {
+    std::map<std::string, std::string> config;
+    std::ifstream file(filename);
+    std::string line;
+
+    while (std::getline(file, line)) {
+        size_t delimiter_pos = line.find('=');
+        config[line.substr(0, delimiter_pos)] = line.substr(delimiter_pos + 1);
+    }
+    return config;
+}
+
 int main() {
-    short port = 8080;
+    auto config = load_config("server.conf");
+    short port = config.count("PORT") ? std::stoi(config["PORT"]) : 8080;
+    std::size_t max_file_size = config.count("MAX_FILE_SIZE") 
+      ? std::stoul(config["MAX_FILE_SIZE"]) 
+      : 1024;
+
     boost::asio::io_context io_context;
-    server s(io_context, port);
+    server s(io_context, port, max_file_size);
     std::cout << "Server running on port " << port << "..." << std::endl;
     io_context.run();
+
     return 0;
 }

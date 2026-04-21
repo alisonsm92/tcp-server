@@ -1,47 +1,55 @@
-// Based on the Boost.Asio C++ library example: 
-// https://www.boost.org/doc/libs/1_81_0/doc/html/boost_asio/example/cpp11_examples.html#boost_asio.example.cpp11_examples.async_tcp_echo_server
-// ~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2025 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
 #include <utility>
 #include <iostream>
 #include <fstream>
+#include <string>
+#include <algorithm>
 #include "session.hpp"
 
-session::session(tcp::socket socket) 
-    : socket_(std::move(socket)) {
+session::session(tcp::socket socket, std::size_t max_file_size) 
+    : socket(std::move(socket)), max_file_size(max_file_size), bytes_written(0) {
 }
 
 void session::start() {
-    auto remote_endpoint = socket_.remote_endpoint();
+    auto remote_endpoint = socket.remote_endpoint();
     std::string filename = "data/session_" + 
-      remote_endpoint.address().to_string() + "_" + 
-      std::to_string(remote_endpoint.port()) + ".bin";
+                            remote_endpoint.address().to_string() + "_" + 
+                            std::to_string(remote_endpoint.port()) + ".bin";
     
-    output_file_.open(filename, std::ios::binary);
+    output_file.open(filename, std::ios::binary | std::ios::app);
     std::cout << "Starting session. Saving to: " << filename << std::endl;
     
     read();
 }
 
 void session::write_to_file(const char* data, std::size_t length) {
-    if (output_file_.is_open()) {
-        output_file_.write(data, length);
-        output_file_.flush();
-        std::cout << "Saved " << length << " bytes." << std::endl;
+    if (bytes_written >= max_file_size) {
+        std::cerr << "ERROR: File size limit already reached (" << max_file_size << " bytes)." << std::endl;
+        return;
+    }
+
+    std::size_t space_left = max_file_size - bytes_written;
+    std::size_t bytes_to_write = space_left > length ? length : space_left;
+
+    if (output_file.is_open()) {
+        output_file.write(data, bytes_to_write);
+        output_file.flush();
+        bytes_written += bytes_to_write;
+        
+        if (bytes_to_write < length) {
+            std::cerr << "WARNING: Only " << bytes_to_write << " of " << length 
+                      << " bytes were saved. File size limit reached!" << std::endl;
+        } else {
+          std::cout << "Saved " << bytes_to_write << " bytes." << std::endl;
+        }
     }
 }
 
 void session::read() {
     auto self(shared_from_this());
-    socket_.async_read_some(boost::asio::buffer(data_, max_length),
+    socket.async_read_some(boost::asio::buffer(data, max_length),
         [this, self](boost::system::error_code ec, std::size_t length) {
             if (!ec) {
-                write_to_file(data_, length);
+                write_to_file(data, length);
                 read();
             }
         });
