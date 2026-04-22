@@ -53,8 +53,14 @@ ServerConfig parse_config(const std::string& filename) {
         : 10;
 
     sc.file_prefix = config_map.count("FILE_NAME_PREFIX") 
-      ? config_map.at("FILE_NAME_PREFIX") 
-      : "session";
+        ? config_map.at("FILE_NAME_PREFIX") 
+        : "session";
+
+    std::cout << "Configuration loaded:" << std::endl;
+    std::cout << "  PORT: " << sc.port << std::endl;
+    std::cout << "  MAX_FILE_SIZE: " << sc.max_file_size << std::endl;
+    std::cout << "  TIMEOUT_IN_SECONDS: " << sc.timeout << std::endl;
+    std::cout << "  FILE_NAME_PREFIX: " << sc.file_prefix << std::endl;
 
     return sc;
 }
