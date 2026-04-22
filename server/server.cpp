@@ -6,7 +6,8 @@ using boost::asio::ip::tcp;
 
 server::server(boost::asio::io_context &io_context, const common::ServerConfig& config)
     : acceptor(io_context, tcp::endpoint(tcp::v4(), config.port)),
-      config(config)
+      config(config),
+      session_count(0)
 {
   accept();
 }
@@ -18,7 +19,7 @@ void server::accept()
       {
         if (!ec)
         {
-          std::make_shared<session>(std::move(socket), config)->start();
+          std::make_shared<session>(std::move(socket), config, ++session_count)->start();
         }
 
         accept();

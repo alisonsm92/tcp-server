@@ -13,4 +13,5 @@ private:
 
   tcp::acceptor acceptor;
   common::ServerConfig config;
+  short session_count;
 };
