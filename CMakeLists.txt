@@ -9,6 +9,7 @@ add_executable(server
     server/main.cpp 
     server/server.cpp 
     server/session.cpp
+    server/config_loader.cpp
 )
 target_link_libraries(server Boost::system)
 
