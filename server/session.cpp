@@ -7,12 +7,10 @@
 #include <chrono>
 #include "session.hpp"
 
-session::session(tcp::socket socket, std::size_t max_file_size, int timeout_seconds, std::string file_prefix) 
+session::session(tcp::socket socket, const config_loader::ServerConfig& config) 
     : socket(std::move(socket)), 
-      max_file_size(max_file_size), 
+      config(config),
       bytes_written(0),
-      timeout_seconds(timeout_seconds),
-      file_prefix(file_prefix),
       timer(this->socket.get_executor())
 {
 }
@@ -20,23 +18,23 @@ session::session(tcp::socket socket, std::size_t max_file_size, int timeout_seco
 void session::start() {
     std::time_t timestamp = std::time(nullptr);
     std::string session_id = std::to_string(timestamp);
-    std::string filename = "data/" + file_prefix + '_' + session_id + ".bin";
+    std::string filename = "data/" + config.file_prefix + '_' + session_id + ".bin";
     
     output_file.open(filename, std::ios::binary);
     std::cout << "Starting session. Saving to: " << filename << std::endl;
     
-    timer.expires_after(std::chrono::seconds(timeout_seconds));
+    timer.expires_after(std::chrono::seconds(config.timeout));
     check_timeout(session_id);
     read();
 }
 
 void session::write_to_file(const char* data, std::size_t length) {
-    if (bytes_written >= max_file_size) {
-        std::cerr << "ERROR: File size limit already reached (" << max_file_size << " bytes)." << std::endl;
+    if (bytes_written >= config.max_file_size) {
+        std::cerr << "ERROR: File size limit already reached (" << config.max_file_size << " bytes)." << std::endl;
         return;
     }
 
-    std::size_t space_left = max_file_size - bytes_written;
+    std::size_t space_left = config.max_file_size - bytes_written;
     std::size_t bytes_to_write = space_left > length ? length : space_left;
 
     if (output_file.is_open()) {
@@ -58,7 +56,7 @@ void session::read() {
     socket.async_read_some(boost::asio::buffer(data, max_length),
         [this, self](boost::system::error_code ec, std::size_t length) {
             if (!ec) {
-                timer.expires_after(std::chrono::seconds(timeout_seconds));
+                timer.expires_after(std::chrono::seconds(config.timeout));
                 write_to_file(data, length);
                 read();
             }

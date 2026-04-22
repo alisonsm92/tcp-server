@@ -1,5 +1,7 @@
+#ifndef CONFIG_LOADER_HPP
+#define CONFIG_LOADER_HPP
+
 #include <string>
-#include <map>
 
 namespace config_loader {
 
@@ -13,3 +15,5 @@ struct ServerConfig {
 ServerConfig parse_config(const std::string& filename);
 
 }
+
+#endif
