@@ -13,12 +13,15 @@ public:
 private:
     void read();
     void write_to_file(const char* data, std::size_t length);
-    void check_timeout(std::string session_id);
+    void check_timeout();
 
     tcp::socket socket;
     common::ServerConfig config;
+    std::string session_id;
     boost::asio::steady_timer timer;
     std::size_t bytes_written;
+    std::string file_name;
+    int file_index;
     std::ofstream output_file;
     static constexpr std::size_t max_length = 1024;
     char data[max_length];
