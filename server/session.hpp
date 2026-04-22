@@ -13,6 +13,8 @@ public:
 private:
     void read();
     void write_to_file(const char* data, std::size_t length);
+    void open_next_file();
+    void send_timeout_signal();
     void check_timeout();
 
     tcp::socket socket;
