@@ -82,6 +82,8 @@ Utilizei também a documentação no [w3schools](https://www.w3schools.com/cpp/d
 
 Utilizei o [Google Gemini CLI](https://geminicli.com/) para orquestrar as modificações e refatoração no código, além de tirar dúvidas sobre detalhes da linguagem. A ferramenta foi essencial para que fosse possível implemntar as funcionalidades no tempo disponível.
 
+Infelizmente, por não ter maior conhecimento na linguagem C++, não consegui aplicar Test Drive Development e nem implemntar testes unitários dentro do tempo disponível.
+
 ## Tempo gasto
 
 Aproximadamente `12 horas` para realizar o desenvolviemnto e conseguir chegar no resultado final.
