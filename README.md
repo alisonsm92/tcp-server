@@ -14,7 +14,7 @@ Este projeto implementa um servidor TCP que recebe dados e os armazena em arquiv
 - `server/`: Servidor com lógica de persistência e rotação de arquivos.
 - `client/`: Cliente interativo para envio de dados.
 - `data/`: Diretório onde os arquivos `.bin` serão salvos.
-- `common`: Utilitários em comum entre cliente e servidor.
+- `common/`: Utilitários em comum entre cliente e servidor.
 
 ## Como configurar os parâmetros
 
@@ -60,7 +60,9 @@ PORT=8080
 3. **Interagir**
 
 - No terminal do **cliente**, digite qualquer mensagem e pressione `Enter`.
-- No terminal do **servidor**, você poderá acompanhar em qual arquivo os dados foram salvos: `[session <s>] Saved <b> bytes to file: data/<FILE_NAME_PREFIX>_<TIMESTAMP>.bin`.
+
+> [!NOTE]
+> No terminal do **servidor**, você poderá acompanhar em qual arquivo os dados foram salvos. Procure pelo seguinte formato de mensagem: `[session <s>] Saved <b> bytes to file: data/<FILE_NAME_PREFIX>_<TIMESTAMP>.bin`.
 
 4. **Verificar Arquivos:**
 
