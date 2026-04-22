@@ -73,7 +73,12 @@ void session::check_timeout() {
             check_timeout();
         } else if (!ec) {
             std::cout << "[ session: " << session_id << "] " << "Timeout! Closing connection." << std::endl;
-            socket.close();
+            
+            auto send_buffer = std::make_shared<std::string>("TIMEOUT");
+            boost::asio::async_write(socket, boost::asio::buffer(*send_buffer),
+                [this, self, send_buffer](boost::system::error_code /*ec*/, std::size_t /*length*/) {
+                    socket.close();
+                });
         }
     });
 }
