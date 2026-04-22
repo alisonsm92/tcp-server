@@ -62,7 +62,11 @@ PORT=8080
 - No terminal do **cliente**, digite qualquer mensagem e pressione `Enter`.
 
 > [!NOTE]
-> No terminal do **servidor**, você poderá acompanhar em qual arquivo os dados foram salvos. Procure pelo seguinte formato de mensagem: `[session <s>] Saved <b> bytes to file: data/<FILE_NAME_PREFIX>_<TIMESTAMP>.bin`.
+> No terminal do **servidor**, você poderá acompanhar em qual arquivo os dados foram salvos. Procure pelo seguinte formato de mensagem: 
+> 
+> ````
+> [session <s>] Saved <b> bytes to file: data/<FILE_NAME_PREFIX>_<TIMESTAMP>.bin`
+> ````
 
 4. **Verificar Arquivos:**
 
