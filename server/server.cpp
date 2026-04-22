@@ -5,10 +5,11 @@
 
 using boost::asio::ip::tcp;
 
-server::server(boost::asio::io_context &io_context, short port, std::size_t max_file_size, int timeout)
+server::server(boost::asio::io_context &io_context, short port, std::size_t max_file_size, int timeout, std::string file_prefix)
     : acceptor(io_context, tcp::endpoint(tcp::v4(), port)),
       max_file_size(max_file_size),
-      timeout(timeout)
+      timeout(timeout),
+      file_prefix(std::move(file_prefix))
 {
   accept();
 }
@@ -20,7 +21,7 @@ void server::accept()
       {
         if (!ec)
         {
-          std::make_shared<session>(std::move(socket), max_file_size, timeout)->start();
+          std::make_shared<session>(std::move(socket), max_file_size, timeout, file_prefix)->start();
         }
 
         accept();

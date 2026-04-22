@@ -27,9 +27,12 @@ int main() {
       ? std::stoul(config["MAX_FILE_SIZE"]) 
       : 1024;
     int timeout = config.count("TIMEOUT_IN_SECONDS") ? std::stoi(config["TIMEOUT_IN_SECONDS"]) : 10;
+    std::string file_prefix = config.count("FILE_NAME_PREFIX") 
+      ? config["FILE_NAME_PREFIX"] 
+      : "session";
 
     boost::asio::io_context io_context;
-    server s(io_context, port, max_file_size, timeout);
+    server s(io_context, port, max_file_size, timeout, file_prefix);
     std::cout << "Server running on port " << port << "..." << std::endl;
     io_context.run();
 

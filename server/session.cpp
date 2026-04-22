@@ -7,30 +7,26 @@
 #include <chrono>
 #include "session.hpp"
 
-session::session(tcp::socket socket, std::size_t max_file_size, int timeout_seconds) 
+session::session(tcp::socket socket, std::size_t max_file_size, int timeout_seconds, std::string file_prefix) 
     : socket(std::move(socket)), 
       max_file_size(max_file_size), 
       bytes_written(0),
       timeout_seconds(timeout_seconds),
+      file_prefix(file_prefix),
       timer(this->socket.get_executor())
 {
 }
 
 void session::start() {
-    auto remote_endpoint = socket.remote_endpoint();
     std::time_t timestamp = std::time(nullptr);
-
-    std::string session_name = std::to_string(timestamp) + "_" +
-      remote_endpoint.address().to_string() + "_" + 
-      std::to_string(remote_endpoint.port());
-
-    std::string filename = "data/session_" + session_name + ".bin";
+    std::string session_id = std::to_string(timestamp);
+    std::string filename = "data/" + file_prefix + '_' + session_id + ".bin";
     
     output_file.open(filename, std::ios::binary);
     std::cout << "Starting session. Saving to: " << filename << std::endl;
     
     timer.expires_after(std::chrono::seconds(timeout_seconds));
-    check_timeout(session_name);
+    check_timeout(session_id);
     read();
 }
 
@@ -69,13 +65,13 @@ void session::read() {
         });
 }
 
-void session::check_timeout(std::string session_name) {
+void session::check_timeout(std::string session_id) {
     auto self(shared_from_this());
-    timer.async_wait([this, self, session_name](const boost::system::error_code& ec) {
+    timer.async_wait([this, self, session_id](const boost::system::error_code& ec) {
         if (ec == boost::asio::error::operation_aborted) {
-            check_timeout(session_name);
+            check_timeout(session_id);
         } else if (!ec) {
-            std::cout << "Session timeout (" << session_name << "). Closing connection." << std::endl;
+            std::cout << "Session timeout (" << session_id << "). Closing connection." << std::endl;
             socket.close();
         }
     });
