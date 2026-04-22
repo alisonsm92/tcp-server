@@ -1,4 +1,3 @@
-#include <iostream>
 #include <boost/asio.hpp>
 #include "session.hpp"
 #include "server.hpp"
