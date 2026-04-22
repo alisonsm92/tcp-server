@@ -71,3 +71,17 @@ PORT=8080
 - **Linguagem:** C++17
 - **Biblioteca:** Boost.Asio 1.81+.
 - **Build:** CMake 3.10+ / GCC.
+
+## Desafios
+
+Durante o desenvolvimento dessa aplicação tive como principal desafio aprender a sintaxe da lingaguem C++, a qual não tive contato prévio. Também entender a API e o funcionando da biblioteca [Boost.Asio](https://www.boost.org/library/latest/asio/).
+
+Dado esse cenário, de não conhecer a linguagem e a biblioteca, utilizei como ponto de partida os exemplos de servidor e cliente TCP da própria documentação da biblioteca Boost.Asio ([examples](https://www.boost.org/doc/libs/latest/doc/html/boost_asio/examples/cpp11_examples.html)).
+
+Utilizei também a documentação no [w3schools](https://www.w3schools.com/cpp/default.asp) para aprender como funcionava estruturas básicas da linguagem C++.
+
+Utilizei o [Google Gemini CLI](https://geminicli.com/) para orquestrar as modificações e refatoração no código, além de tirar dúvidas sobre detalhes da linguagem. A ferramenta foi essencial para que fosse possível implemntar as funcionalidades no tempo disponível.
+
+## Tempo gasto
+
+Aproximadamente `12 horas` para realizar o desenvolviemnto e conseguir chegar no resultado final.
