@@ -3,6 +3,20 @@
 #include "config_loader.hpp"
 
 using boost::asio::ip::tcp;
+bool check_for_timeout_signal(tcp::socket& socket) {
+    char buffer[1024];
+    boost::system::error_code ec;
+    socket.non_blocking(true);
+    size_t bytes = socket.read_some(boost::asio::buffer(buffer), ec);
+
+    if (bytes > 0) {
+        std::string response(buffer, bytes);
+        if (response.find("TIMEOUT") != std::string::npos) {
+            return true;
+        }
+    }
+    return (ec == boost::asio::error::eof);
+}
 
 int main() {
     try {
@@ -27,17 +41,11 @@ int main() {
             boost::system::error_code wec;
             boost::asio::write(socket, boost::asio::buffer(line), wec);
 
-            std::cout << "\033[A"; // Move cursor up to overwrite the input line
+            std::cout << "\033[A";
             std::cout << "\r" << line << " ";
 
-            socket.non_blocking(true);
-            char buffer[1024];
-            boost::system::error_code rec;
-            size_t bytes = socket.read_some(boost::asio::buffer(buffer), rec);
-            std::string response(buffer, bytes);
-
-            if (response.find("TIMEOUT") != std::string::npos) {
-                std::cout << "✘" << std::endl;  
+            if (check_for_timeout_signal(socket)) {
+                std::cout << "✘" << std::endl;
                 std::cout << "Server disconnected. Closing client." << std::endl;
                 break;
             }
