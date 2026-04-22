@@ -5,15 +5,18 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(Boost REQUIRED COMPONENTS system)
 
+include_directories(common)
+
 add_executable(server 
     server/main.cpp 
     server/server.cpp 
     server/session.cpp
-    server/config_loader.cpp
+    common/config_loader.cpp
 )
 target_link_libraries(server Boost::system)
 
 add_executable(client 
     client/main.cpp
+    common/config_loader.cpp
 )
 target_link_libraries(client Boost::system)

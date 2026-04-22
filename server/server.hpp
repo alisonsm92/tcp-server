@@ -6,11 +6,11 @@ using boost::asio::ip::tcp;
 class server
 {
 public:
-  server(boost::asio::io_context &io_context, const config_loader::ServerConfig& config);
+  server(boost::asio::io_context &io_context, const common::ServerConfig& config);
 
 private:
   void accept();
 
   tcp::acceptor acceptor;
-  config_loader::ServerConfig config;
+  common::ServerConfig config;
 };

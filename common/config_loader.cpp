@@ -4,13 +4,12 @@
 #include <regex>
 #include <type_traits>
 
-namespace config_loader {
+namespace common {
 
 static const std::regex numeric_regex("^[0-9]+$");
 
-template <typename T>
-T validate_numeric(const std::string& key, std::string value) {
-    if (value.back() == '\r') {
+int validate_numeric(const std::string& key, std::string value) {
+    if (!value.empty() && value.back() == '\r') {
         value.pop_back();
     }
     
@@ -36,20 +35,20 @@ std::map<std::string, std::string> load_config_map(const std::string& filename) 
     return config;
 }
 
-ServerConfig parse_config(const std::string& filename) {
+ServerConfig parse_server_config(const std::string& filename) {
     auto config_map = load_config_map(filename);
     ServerConfig sc;
 
     sc.port = config_map.count("PORT") 
-        ? validate_numeric<short>("PORT", config_map.at("PORT")) 
+        ? validate_numeric("PORT", config_map.at("PORT")) 
         : 8080;
 
     sc.max_file_size = config_map.count("MAX_FILE_SIZE") 
-        ? validate_numeric<std::size_t>("MAX_FILE_SIZE", config_map.at("MAX_FILE_SIZE")) 
+        ? validate_numeric("MAX_FILE_SIZE", config_map.at("MAX_FILE_SIZE")) 
         : 1024;
 
     sc.timeout = config_map.count("TIMEOUT_IN_SECONDS") 
-        ? validate_numeric<int>("TIMEOUT_IN_SECONDS", config_map.at("TIMEOUT_IN_SECONDS")) 
+        ? validate_numeric("TIMEOUT_IN_SECONDS", config_map.at("TIMEOUT_IN_SECONDS")) 
         : 10;
 
     sc.file_prefix = config_map.count("FILE_NAME_PREFIX") 
@@ -63,6 +62,18 @@ ServerConfig parse_config(const std::string& filename) {
     std::cout << "  FILE_NAME_PREFIX: " << sc.file_prefix << std::endl;
 
     return sc;
+}
+
+short load_port_config(const std::string& filename) {
+    auto config_map = load_config_map(filename);
+    short port = config_map.count("PORT") 
+        ? validate_numeric("PORT", config_map.at("PORT")) 
+        : 8080;
+    
+    std::cout << "Configuration loaded:" << std::endl;
+    std::cout << "  PORT: " << port << std::endl;
+    
+    return port;
 }
 
 }

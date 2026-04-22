@@ -4,7 +4,7 @@
 
 using boost::asio::ip::tcp;
 
-server::server(boost::asio::io_context &io_context, const config_loader::ServerConfig& config)
+server::server(boost::asio::io_context &io_context, const common::ServerConfig& config)
     : acceptor(io_context, tcp::endpoint(tcp::v4(), config.port)),
       config(config)
 {

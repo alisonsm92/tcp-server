@@ -7,7 +7,7 @@ using boost::asio::ip::tcp;
 
 class session : public std::enable_shared_from_this<session> {
 public:
-    session(tcp::socket socket, const config_loader::ServerConfig& config);
+    session(tcp::socket socket, const common::ServerConfig& config);
     void start();
 
 private:
@@ -16,7 +16,7 @@ private:
     void check_timeout(std::string session_id);
 
     tcp::socket socket;
-    config_loader::ServerConfig config;
+    common::ServerConfig config;
     boost::asio::steady_timer timer;
     std::size_t bytes_written;
     std::ofstream output_file;

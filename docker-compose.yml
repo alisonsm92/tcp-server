@@ -8,7 +8,7 @@ services:
       - "8080:8080"
     volumes:
       - ./data:/app/data
-      - ./server.conf:/app/server.conf
+      - ./server/server.conf:/app/server/server.conf
 
   client:
     build: .
@@ -16,5 +16,7 @@ services:
     stdin_open: true
     tty: true
     init: true
+    volumes:
+      - ./client/client.conf:/app/client/client.conf
     depends_on:
       - server

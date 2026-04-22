@@ -4,7 +4,7 @@
 #include "config_loader.hpp"
 
 int main() {
-    config_loader::ServerConfig config = config_loader::parse_config("server.conf");
+    common::ServerConfig config = common::parse_server_config("server/server.conf");
     boost::asio::io_context io_context;
     server s(io_context, config);
     

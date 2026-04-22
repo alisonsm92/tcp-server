@@ -4,7 +4,7 @@
 #include <chrono>
 #include "session.hpp"
 
-session::session(tcp::socket socket, const config_loader::ServerConfig& config) 
+session::session(tcp::socket socket, const common::ServerConfig& config) 
     : socket(std::move(socket)), 
       config(config),
       bytes_written(0),
